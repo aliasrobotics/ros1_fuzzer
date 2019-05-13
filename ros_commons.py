@@ -94,7 +94,6 @@ def parse_complex_types(s_name, type_dict, strategy_dict):
             strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(type_dict)))
 
 
-# A better approach. It returns an instance of a ROS msg directly, so no need for mapping! :)
 @st.composite
 def dynamic_strategy_generator_ros(draw, ros_class, strategy_dict):  # This generates existing ROS msgs objects
     aux_obj = ros_class()
