@@ -60,17 +60,7 @@ def map_ros_types(ros_class):
     for s_name, s_type in slots_full:
         try:
             if '[' and ']' in s_type:
-                array_size = s_type[s_type.index('[') + 1:s_type.index(']')]
-                if array_size == '':
-                    array_size = None  # TODO: not None!
-                else:
-                    array_size = int(array_size)
-                aux = s_type.split('[')[0]
-                if aux == 'string':
-                    strategy_dict[s_name] = array(elements=string(), min_size=array_size, max_size=array_size)
-                else:
-                    strategy_dict[s_name] = array(elements=npst.from_dtype(np.dtype(aux)), min_size=array_size,
-                                                  max_size=array_size)
+                parse_basic_arrays(s_name, s_type, strategy_dict)
             elif s_type is 'string':
                 strategy_dict[s_name] = st.text()
             elif s_type is 'time':
@@ -80,14 +70,32 @@ def map_ros_types(ros_class):
             else:  # numpy compatible ROS built-in types
                 strategy_dict[s_name] = npst.from_dtype(np.dtype(s_type))
         except TypeError:
-            # TODO: Complex type arrays
-            if '/' in s_type and '[]' not in s_type:
-                strategy_dict[s_name] = map_ros_types(ros_msg_loader(s_type))
-            elif '/' in s_type and '[]' in s_type:
-                # TODO: Implement complex types fixed value arrays
-                s_type_fix = s_type.split('[')[0]  # e.g. std_msgs/Header take just Header
-                strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(s_type_fix)))
+            parse_complex_types(s_name, s_type, strategy_dict)
     return dynamic_strategy_generator_ros(ros_class, strategy_dict)
+
+
+def parse_basic_arrays(s_name, s_type, strategy_dict):
+    array_size = s_type[s_type.index('[') + 1:s_type.index(']')]
+    if array_size == '':
+        array_size = None  # TODO: not None!
+    else:
+        array_size = int(array_size)
+    aux = s_type.split('[')[0]
+    if aux == 'string':
+        strategy_dict[s_name] = array(elements=string(), min_size=array_size, max_size=array_size)
+    else:
+        strategy_dict[s_name] = array(elements=npst.from_dtype(np.dtype(aux)), min_size=array_size,
+                                      max_size=array_size)
+
+
+def parse_complex_types(s_name, s_type, strategy_dict):
+    # TODO: Complex type arrays
+    if '/' in s_type and '[]' not in s_type:
+        strategy_dict[s_name] = map_ros_types(ros_msg_loader(s_type))
+    elif '/' in s_type and '[]' in s_type:
+        # TODO: Implement complex types fixed value arrays
+        s_type_fix = s_type.split('[')[0]  # e.g. std_msgs/Header take just Header
+        strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(s_type_fix)))
 
 
 # A better approach. It returns an instance of a ROS msg directly, so no need for mapping! :)
