@@ -14,18 +14,28 @@ except ImportError:
     print "Please install ROS first"
 
 
-def ros_msg_loader(msg_type):
-    pattern = re.compile(r'([\w]+)\/([\w]+)')
-    match = pattern.search(msg_type)
-    if match:
-        module_name = match.group(1) + '.msg'
-        class_name = match.group(2)
-        module = importlib.import_module(module_name)
-        msg_class = module.__dict__[class_name]
-        if not msg_class:
-            raise ImportError
-        else:
-            return msg_class
+def ros_type_to_dict(msg_type):
+    type_regexp = re.compile(r'^(?P<complex>(?P<module>[\w]+)/)?(?P<type>[\w]+)(?P<array>\[(?P<array_length>[0-9]*)?\])?$')
+    type_match = type_regexp.match(msg_type)
+    if type_match:
+        return type_match.groupdict()
+    else:
+        return None
+
+
+def ros_msg_loader(type_dict):
+    module = importlib.import_module(type_dict['module'])
+    msg_class = module.__dict__[type_dict['type']]
+    if not msg_class:
+        raise ImportError
+    else:
+        return msg_class
+
+
+def ros_msg_loader_str(msg_type):
+    type_dict = ros_type_to_dict(msg_type)
+    if type_dict:
+        ros_msg_loader(type_dict)
     else:
         raise ImportError
 
@@ -58,44 +68,46 @@ def map_ros_types(ros_class):
     slot_types = ros_class._slot_types
     slots_full = list(zip(slot_names, slot_types))
     for s_name, s_type in slots_full:
-        try:
-            if '[' and ']' in s_type:
-                parse_basic_arrays(s_name, s_type, strategy_dict)
-            elif s_type is 'string':
-                strategy_dict[s_name] = st.text()
-            elif s_type is 'time':
-                strategy_dict[s_name] = time()
-            elif s_type is 'duration':
-                strategy_dict[s_name] = duration()
-            else:  # numpy compatible ROS built-in types
-                strategy_dict[s_name] = npst.from_dtype(np.dtype(s_type))
-        except TypeError:
-            parse_complex_types(s_name, s_type, strategy_dict)
+        type_dict = ros_type_to_dict(s_type)
+        if type_dict:
+            if not type_dict['complex']:
+                if type_dict['array']:
+                    parse_basic_arrays(s_name, type_dict, strategy_dict)
+                elif type_dict['type'] is 'string':
+                    strategy_dict[s_name] = st.text()
+                elif type_dict['type'] is 'time':
+                    strategy_dict[s_name] = time()
+                elif type_dict['type'] is 'duration':
+                    strategy_dict[s_name] = duration()
+                else:  # numpy compatible ROS built-in types
+                    strategy_dict[s_name] = npst.from_dtype(np.dtype(type_dict['type']))
+            else:
+                parse_complex_types(s_name, type_dict, strategy_dict)
     return dynamic_strategy_generator_ros(ros_class, strategy_dict)
 
 
-def parse_basic_arrays(s_name, s_type, strategy_dict):
-    array_size = s_type[s_type.index('[') + 1:s_type.index(']')]
-    if array_size == '':
-        array_size = None  # TODO: not None!
+def parse_basic_arrays(s_name, type_dict, strategy_dict):
+    if type_dict['array_size']:
+        array_size = int(type_dict['array_size'])
     else:
-        array_size = int(array_size)
-    aux = s_type.split('[')[0]
-    if aux == 'string':
+        array_size = None
+    if type_dict['type'] == 'string':
         strategy_dict[s_name] = array(elements=string(), min_size=array_size, max_size=array_size)
     else:
-        strategy_dict[s_name] = array(elements=npst.from_dtype(np.dtype(aux)), min_size=array_size,
+        strategy_dict[s_name] = array(elements=npst.from_dtype(np.dtype(type_dict['type'])), min_size=array_size,
                                       max_size=array_size)
 
 
-def parse_complex_types(s_name, s_type, strategy_dict):
-    # TODO: Complex type arrays
-    if '/' in s_type and '[]' not in s_type:
-        strategy_dict[s_name] = map_ros_types(ros_msg_loader(s_type))
-    elif '/' in s_type and '[]' in s_type:
-        # TODO: Implement complex types fixed value arrays
-        s_type_fix = s_type.split('[')[0]  # e.g. std_msgs/Header take just Header
-        strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(s_type_fix)))
+def parse_complex_types(s_name, type_dict, strategy_dict):
+    if not type_dict['array']:
+        strategy_dict[s_name] = map_ros_types(ros_msg_loader(type_dict))
+    else:
+        if type_dict['array_size']:
+            strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(type_dict)),
+                                          min_size=int(type_dict['array_size']),
+                                          max_size=int(type_dict['array_size']))
+        else:
+            strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(type_dict)))
 
 
 # A better approach. It returns an instance of a ROS msg directly, so no need for mapping! :)
