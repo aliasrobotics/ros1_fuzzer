@@ -10,32 +10,25 @@ try:
     import rospy
     import rosmsg
     import rospkg
-    from rosgraph_msgs.msg import *
-    from geometry_msgs.msg import *
-    from std_msgs.msg import *
-    from sensor_msgs.msg import *
-    from diagnostic_msgs.msg import *
-    from nav_msgs.msg import *
-    from shape_msgs.msg import *
-    from stereo_msgs.msg import *
-    from trajectory_msgs.msg import *
-    from visualization_msgs.msg import *
-    from control_msgs.msg import *
-    from tf2_msgs.msg import *
-    from actionlib_msgs.msg import *
 except ImportError:
     print "Please install ROS first"
-
 
 
 def ros_msg_loader(msg_type):
     pattern = re.compile('([\w]+)\/([\w]+)')
     match = pattern.search(msg_type)
-    module_name = match.group(1) + '.msg'
-    class_name = match.group(2)
-    module = importlib.import_module(module_name)
-    msg_class = module.__dict__[class_name]
-    return msg_class
+    if match:
+        module_name = match.group(1) + '.msg'
+        class_name = match.group(2)
+        module = importlib.import_module(module_name)
+        msg_class = module.__dict__[class_name]
+        if not msg_class:
+            raise ImportError
+        else:
+            return msg_class
+    else:
+        raise ImportError
+
 
 
 def ros_msg_list():
