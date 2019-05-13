@@ -52,10 +52,10 @@ def create_publisher(topic, msg_type):
     return pub
 
 
-def map_ros_types(type_name):
+def map_ros_types(ros_class):
     strategy_dict = {}
-    slot_names = type_name.__slots__
-    slot_types = type_name._slot_types
+    slot_names = ros_class.__slots__
+    slot_types = ros_class._slot_types
     slots_full = list(zip(slot_names, slot_types))
     for s_name, s_type in slots_full:
         try:
@@ -87,13 +87,13 @@ def map_ros_types(type_name):
                 # TODO: Implement complex types fixed value arrays
                 s_type_fix = s_type.split('[')[0]  # e.g. std_msgs/Header take just Header
                 strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(s_type_fix)))
-    return dynamic_strategy_generator_ros(type_name, strategy_dict)
+    return dynamic_strategy_generator_ros(ros_class, strategy_dict)
 
 
 # A better approach. It returns an instance of a ROS msg directly, so no need for mapping! :)
 @st.composite
-def dynamic_strategy_generator_ros(draw, type_name, strategy_dict):  # This generates existing ROS msgs objects
-    aux_obj = type_name()
+def dynamic_strategy_generator_ros(draw, ros_class, strategy_dict):  # This generates existing ROS msgs objects
+    aux_obj = ros_class()
     for key, value in strategy_dict.iteritems():
         setattr(aux_obj, key, draw(value))
     return aux_obj
