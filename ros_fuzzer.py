@@ -1,12 +1,13 @@
-import rospy
-from ros_commons import ros_msg_loader_str, create_publisher, map_ros_types
-from hypothesis import given, settings, Verbosity
 import logging
+import rospy
 from argparse import ArgumentParser
+from hypothesis import given, settings, Verbosity
+from ros_commons import ros_msg_loader_str, create_publisher, map_ros_types
 
 
 def test_main_wrapper(msg_type, topic):
     pub = create_publisher(topic, msg_type)
+
     @settings(verbosity=Verbosity.verbose)
     @given(msg=map_ros_types(msg_type))
     def test_main(pub, msg):
@@ -42,4 +43,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

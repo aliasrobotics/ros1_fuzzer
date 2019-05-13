@@ -1,11 +1,10 @@
 import importlib
-
-import hypothesis.strategies as st
+import re
 import numpy as np
 import hypothesis.extra.numpy as npst
-import re
-
+import hypothesis.strategies as st
 from ros_basic_strategies import array, string, time, duration
+
 try:
     import rospy
     import rosmsg
@@ -15,7 +14,8 @@ except ImportError:
 
 
 def ros_type_to_dict(msg_type):
-    type_regexp = re.compile(r'^(?P<complex>(?P<module>[\w]+)/)?(?P<type>[\w]+)(?P<array>\[(?P<array_size>[0-9]*)?\])?$')
+    type_regexp = re.compile(
+        r'^(?P<complex>(?P<module>[\w]+)/)?(?P<type>[\w]+)(?P<array>\[(?P<array_size>[0-9]*)?\])?$')
     type_match = type_regexp.match(msg_type)
     if type_match:
         return type_match.groupdict()
