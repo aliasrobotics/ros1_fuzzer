@@ -40,22 +40,6 @@ def ros_msg_loader_str(msg_type):
         raise ImportError('Unable to find defined ROS Message type: {}'.format(msg_type))
 
 
-def ros_msg_list():
-    msg_list = []
-    ros_pack = rospkg.RosPack()
-    packs = sorted([x for x in rosmsg.iterate_packages(ros_pack, rosmsg.MODE_MSG)])
-    for (p, path) in packs:
-        for file in rosmsg.list_types(p):
-            msg_list.append(file.split('/')[1])
-    return msg_list
-
-
-def check_msg_type(msg_list, msg_str):
-    if msg_str in msg_list:
-        return True
-    return False
-
-
 def create_publisher(topic, msg_type):
     pub = rospy.Publisher(topic, msg_type, queue_size=10)
     rospy.init_node('fuzzer_node', anonymous=False)

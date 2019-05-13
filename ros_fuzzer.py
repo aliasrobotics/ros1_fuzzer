@@ -1,8 +1,9 @@
-from ros_commons import *
+import rospy
+from ros_commons import ros_msg_loader_str, create_publisher, map_ros_types
 from hypothesis import given, settings, Verbosity
 import logging
 from argparse import ArgumentParser
-#import pydevd_pycharm
+
 
 def test_main_wrapper(msg_type, topic):
     pub = create_publisher(topic, msg_type)
@@ -22,7 +23,6 @@ def main():
     """
     Main method
     """
-  #  pydevd_pycharm.settrace('172.20.10.15', port=6666, stdoutToServer=True, stderrToServer=True)
     logging.basicConfig()
     logger = logging.getLogger(__name__)
     parser = ArgumentParser(description='ROS subscriber fuzzer')
@@ -33,10 +33,7 @@ def main():
         parser.print_help()
     else:
         try:
-            if check_msg_type(ros_msg_list(), args.message):
-                test_main_wrapper(eval(args.message), args.topic)
-            else:
-                logger.warning('Invalid ROS data type')
+            test_main_wrapper(ros_msg_loader_str(args.message), args.topic)
         except Exception as e:
             logger.critical('Exception occurred during execution --> ' + str(e))
 
