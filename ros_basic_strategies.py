@@ -41,5 +41,6 @@ def duration(draw, secs=st.integers(), nsecs=st.integers()):
 @st.defines_strategy
 def array(elements=None, min_size=None, max_size=None, unique_by=None, unique=None):
     # TODO: Assert that strategy for elements is from supported strategies.
-    if not min_size <= max_size: raise InvalidArgument
+    if not min_size:
+        min_size = 0
     return st.lists(elements=elements, min_size=min_size, max_size=max_size, unique_by=unique_by, unique=unique)
