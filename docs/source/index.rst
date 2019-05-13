@@ -7,23 +7,13 @@ Welcome to ROS Fuzzer's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
-..  automodule:: ros_basic_strategies
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   install
+   usage
+   module
 
-..  automodule:: ros_commons
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-..  automodule:: ros_fuzzer
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 Indices and tables
 ==================
