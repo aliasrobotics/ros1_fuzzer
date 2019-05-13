@@ -1,12 +1,11 @@
 import unittest
-
 import rospy
 from hypothesis import given
-from rosgraph_msgs.msg import Log
 from std_msgs.msg import Header
 from rosgraph_msgs.msg import Log
-from ros_commons import map_ros_types, ros_msg_loader_str
-from hypothesis.strategies import lists, text
+from ros_commons import map_ros_types
+from hypothesis.strategies import text
+
 
 class TestRosLogMessages(unittest.TestCase):
 
