@@ -1,6 +1,10 @@
+import importlib
+
 import hypothesis.strategies as st
 import numpy as np
 import hypothesis.extra.numpy as npst
+import re
+
 from ros_basic_strategies import array, string, time, duration
 try:
     import rospy
@@ -21,6 +25,17 @@ try:
     from actionlib_msgs.msg import *
 except ImportError:
     print "Please install ROS first"
+
+
+
+def ros_msg_loader(msg_type):
+    pattern = re.compile('([\w]+)\/([\w]+)')
+    match = pattern.search(msg_type)
+    module_name = match.group(1) + '.msg'
+    class_name = match.group(2)
+    module = importlib.import_module(module_name)
+    msg_class = module.__dict__[class_name]
+    return msg_class
 
 
 def ros_msg_list():
