@@ -17,7 +17,7 @@ def string(min_size=STRING_MIN_SIZE, max_size=STRING_MAX_SIZE):
 
 
 @st.composite
-def time(draw, secs=st.integers(), nsecs=st.integers()):
+def time(draw, secs=st.integers(min_value=0), nsecs=st.integers(min_value=0)):
     _Time = namedtuple('Time', 'secs nsecs')
     secs_value, nsecs_value = draw(secs), draw(nsecs)
     assert isinstance(secs_value, int), 'drew invalid sec={secs_value} from {secs} for integer field'.\
@@ -28,7 +28,7 @@ def time(draw, secs=st.integers(), nsecs=st.integers()):
 
 
 @st.composite
-def duration(draw, secs=st.integers(), nsecs=st.integers()):
+def duration(draw, secs=st.integers(min_value=0), nsecs=st.integers(min_value=0)):
     _Duration = namedtuple('Duration', 'secs nsecs')
     secs_value, nsecs_value = draw(secs), draw(nsecs)
     assert isinstance(secs_value, int), 'drew invalid sec={secs_value} from {secs} for integer field'.\
@@ -41,5 +41,6 @@ def duration(draw, secs=st.integers(), nsecs=st.integers()):
 @st.defines_strategy
 def array(elements=None, min_size=None, max_size=None, unique_by=None, unique=None):
     # TODO: Assert that strategy for elements is from supported strategies.
-    if not min_size <= max_size: raise InvalidArgument
+    if not min_size:
+        min_size = 0
     return st.lists(elements=elements, min_size=min_size, max_size=max_size, unique_by=unique_by, unique=unique)
