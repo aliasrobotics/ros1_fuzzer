@@ -97,27 +97,3 @@ def dynamic_strategy_generator_ros(draw, type_name, strategy_dict):  # This gene
     for key, value in strategy_dict.iteritems():
         setattr(aux_obj, key, draw(value))
     return aux_obj
-
-
-'''
-# Calling this.example returns a class with attributes, not an instance! Class.__dict__ returns nothing.
-# For returning and instance see:
-        # https://www.python-course.eu/python3_classes_and_type.php
-        # http://jelly.codes/articles/python-dynamically-creating-classes/
-@st.composite
-def dynamic_strategy_generator(draw, type_name, strategy_dict):  # This generates unexisting new Objects parallel top ROS msgs
-    aux_dict = {}
-    for key, value in strategy_dict.iteritems():
-        aux_dict[key] = draw(value)
-    GenClass = type(type_name.__name__, (), aux_dict)
-    return GenClass()
-
-
-def map_msgs(msg_type, parallel_class):
-    class_attrs = [getattr(parallel_class, a) for a in dir(parallel_class) if not a.startswith('__')]
-    aux = list(zip(msg_type.__slots__, class_attrs))
-    msg_instance = msg_type()  # instance of some msg
-    for attr, value in aux:
-        setattr(msg_instance, attr, value)
-    return msg_instance
-'''
