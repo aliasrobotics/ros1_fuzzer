@@ -1,26 +1,33 @@
+import importlib
+
 import hypothesis.strategies as st
 import numpy as np
 import hypothesis.extra.numpy as npst
+import re
+
 from ros_basic_strategies import array, string, time, duration
 try:
     import rospy
     import rosmsg
     import rospkg
-    from rosgraph_msgs.msg import *
-    from geometry_msgs.msg import *
-    from std_msgs.msg import *
-    from sensor_msgs.msg import *
-    from diagnostic_msgs.msg import *
-    from nav_msgs.msg import *
-    from shape_msgs.msg import *
-    from stereo_msgs.msg import *
-    from trajectory_msgs.msg import *
-    from visualization_msgs.msg import *
-    from control_msgs.msg import *
-    from tf2_msgs.msg import *
-    from actionlib_msgs.msg import *
 except ImportError:
     print "Please install ROS first"
+
+
+def ros_msg_loader(msg_type):
+    pattern = re.compile(r'([\w]+)\/([\w]+)')
+    match = pattern.search(msg_type)
+    if match:
+        module_name = match.group(1) + '.msg'
+        class_name = match.group(2)
+        module = importlib.import_module(module_name)
+        msg_class = module.__dict__[class_name]
+        if not msg_class:
+            raise ImportError
+        else:
+            return msg_class
+    else:
+        raise ImportError
 
 
 def ros_msg_list():
@@ -45,10 +52,10 @@ def create_publisher(topic, msg_type):
     return pub
 
 
-def map_ros_types(type_name):
+def map_ros_types(ros_class):
     strategy_dict = {}
-    slot_names = type_name.__slots__
-    slot_types = type_name._slot_types
+    slot_names = ros_class.__slots__
+    slot_types = ros_class._slot_types
     slots_full = list(zip(slot_names, slot_types))
     for s_name, s_type in slots_full:
         try:
@@ -75,43 +82,18 @@ def map_ros_types(type_name):
         except TypeError:
             # TODO: Complex type arrays
             if '/' in s_type and '[]' not in s_type:
-                s_type_fix = s_type.split('/')[1]  # e.g. std_msgs/Header take just Header
-                strategy_dict[s_name] = map_ros_types(eval(s_type_fix))
+                strategy_dict[s_name] = map_ros_types(ros_msg_loader(s_type))
             elif '/' in s_type and '[]' in s_type:
                 # TODO: Implement complex types fixed value arrays
-                s_type_fix = s_type.split('/')[1].split('[')[0]  # e.g. std_msgs/Header take just Header
-                strategy_dict[s_name] = array(elements=map_ros_types(eval(s_type_fix)))
-    return dynamic_strategy_generator_ros(type_name, strategy_dict)
+                s_type_fix = s_type.split('[')[0]  # e.g. std_msgs/Header take just Header
+                strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(s_type_fix)))
+    return dynamic_strategy_generator_ros(ros_class, strategy_dict)
 
 
 # A better approach. It returns an instance of a ROS msg directly, so no need for mapping! :)
 @st.composite
-def dynamic_strategy_generator_ros(draw, type_name, strategy_dict):  # This generates existing ROS msgs objects
-    aux_obj = type_name()
+def dynamic_strategy_generator_ros(draw, ros_class, strategy_dict):  # This generates existing ROS msgs objects
+    aux_obj = ros_class()
     for key, value in strategy_dict.iteritems():
         setattr(aux_obj, key, draw(value))
     return aux_obj
-
-
-'''
-# Calling this.example returns a class with attributes, not an instance! Class.__dict__ returns nothing.
-# For returning and instance see:
-        # https://www.python-course.eu/python3_classes_and_type.php
-        # http://jelly.codes/articles/python-dynamically-creating-classes/
-@st.composite
-def dynamic_strategy_generator(draw, type_name, strategy_dict):  # This generates unexisting new Objects parallel top ROS msgs
-    aux_dict = {}
-    for key, value in strategy_dict.iteritems():
-        aux_dict[key] = draw(value)
-    GenClass = type(type_name.__name__, (), aux_dict)
-    return GenClass()
-
-
-def map_msgs(msg_type, parallel_class):
-    class_attrs = [getattr(parallel_class, a) for a in dir(parallel_class) if not a.startswith('__')]
-    aux = list(zip(msg_type.__slots__, class_attrs))
-    msg_instance = msg_type()  # instance of some msg
-    for attr, value in aux:
-        setattr(msg_instance, attr, value)
-    return msg_instance
-'''
