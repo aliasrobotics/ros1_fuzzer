@@ -15,7 +15,7 @@ except ImportError:
 
 
 def ros_type_to_dict(msg_type):
-    type_regexp = re.compile(r'^(?P<complex>(?P<module>[\w]+)/)?(?P<type>[\w]+)(?P<array>\[(?P<array_length>[0-9]*)?\])?$')
+    type_regexp = re.compile(r'^(?P<complex>(?P<module>[\w]+)/)?(?P<type>[\w]+)(?P<array>\[(?P<array_size>[0-9]*)?\])?$')
     type_match = type_regexp.match(msg_type)
     if type_match:
         return type_match.groupdict()
