@@ -35,7 +35,7 @@ def ros_msg_loader(type_dict):
 def ros_msg_loader_str(msg_type):
     type_dict = ros_type_to_dict(msg_type)
     if type_dict:
-        ros_msg_loader(type_dict)
+        return ros_msg_loader(type_dict)
     else:
         raise ImportError('Unable to find defined ROS Message type: {}'.format(msg_type))
 
