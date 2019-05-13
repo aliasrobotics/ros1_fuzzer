@@ -15,7 +15,7 @@ except ImportError:
 
 
 def ros_msg_loader(msg_type):
-    pattern = re.compile('([\w]+)\/([\w]+)')
+    pattern = re.compile(r'([\w]+)\/([\w]+)')
     match = pattern.search(msg_type)
     if match:
         module_name = match.group(1) + '.msg'
@@ -28,7 +28,6 @@ def ros_msg_loader(msg_type):
             return msg_class
     else:
         raise ImportError
-
 
 
 def ros_msg_list():
@@ -83,12 +82,11 @@ def map_ros_types(type_name):
         except TypeError:
             # TODO: Complex type arrays
             if '/' in s_type and '[]' not in s_type:
-                s_type_fix = s_type.split('/')[1]  # e.g. std_msgs/Header take just Header
-                strategy_dict[s_name] = map_ros_types(eval(s_type_fix))
+                strategy_dict[s_name] = map_ros_types(ros_msg_loader(s_type))
             elif '/' in s_type and '[]' in s_type:
                 # TODO: Implement complex types fixed value arrays
-                s_type_fix = s_type.split('/')[1].split('[')[0]  # e.g. std_msgs/Header take just Header
-                strategy_dict[s_name] = array(elements=map_ros_types(eval(s_type_fix)))
+                s_type_fix = s_type.split('[')[0]  # e.g. std_msgs/Header take just Header
+                strategy_dict[s_name] = array(elements=map_ros_types(ros_msg_loader(s_type_fix)))
     return dynamic_strategy_generator_ros(type_name, strategy_dict)
 
 
