@@ -12,8 +12,9 @@ def test_main_wrapper(msg_type, topic):
     def test_main(pub, msg):
         try:
             pub.publish(msg)
-        except:
-            pass
+            print "publishing"
+        except Exception as e:
+            print "Error when publishing: {}".format(str(e))
 
     test_main(pub)
     rospy.signal_shutdown('shutdown')
@@ -33,11 +34,12 @@ def main():
         parser.print_help()
     else:
         try:
-            test_main_wrapper(ros_msg_loader_str(args.message), args.topic)
+            msg_type = ros_msg_loader_str(args.message)
+            test_main_wrapper(msg_type, args.topic)
         except Exception as e:
             logger.critical('Exception occurred during execution --> ' + str(e))
 
 
 if __name__ == '__main__':
     main()
-    
+
