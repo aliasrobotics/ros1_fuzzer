@@ -42,3 +42,20 @@ that is then modified before being sent.
         log.name = 'Fixed name'
         self.pub.publish(log)
 
+
+The :func:`ros1_fuzzer.ros_commons.map_ros_types` function provides a dynamic strategy for the defined ROS Message class,
+that correctly sets up each of the elements of the message with corresponding data type fuzzers.
+Examples can be extended to even fuzz different message types or subelements independently.
+Built in hypothesis :mod:`hypothesis.strategies` can be used as well.
+The :func:`hypothesis.given` decorator runs the decorated function with all the defined fuzz cases.
+
+.. code-block:: python
+    :caption: Example unittest with multiple parameters.
+
+    @given(log=map_ros_types(Log), header=map_ros_types(Header), name=st.text(min_length=1, max_length=20))
+    def test_fuzz_log_message_parameters(log, header, name):
+        log.name = name
+        log.header = header
+        self.pub.publish(log)
+
+
