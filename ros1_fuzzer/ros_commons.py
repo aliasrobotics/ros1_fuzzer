@@ -36,7 +36,6 @@ def ros_msg_loader(type_dict):
 
 def ros_msg_loader_str(msg_type):
     type_dict = ros_type_to_dict(msg_type)
-    print type_dict
     if type_dict:
         return ros_msg_loader(type_dict)
     else:
