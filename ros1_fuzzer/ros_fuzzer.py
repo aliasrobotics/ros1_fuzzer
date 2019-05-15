@@ -6,6 +6,12 @@ from ros_commons import ros_msg_loader_str, create_publisher, map_ros_types
 
 
 def test_main_wrapper(msg_type, topic):
+    """
+    Wrapper for the main function. Publishes the fuzzed values for a given ROS message type.
+
+    :param msg_type: ROS message type
+    :param topic: ROS topic to be publish the fuzzed messages
+    """
     pub = create_publisher(topic, msg_type)
 
     @settings(verbosity=Verbosity.verbose)
@@ -23,7 +29,7 @@ def test_main_wrapper(msg_type, topic):
 
 def main():
     """
-    Main method
+    Main method. Takes two command line arguments, parses them and calls :func:`test_main_wrapper`
     """
     logging.basicConfig()
     logger = logging.getLogger(__name__)
