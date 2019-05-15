@@ -18,9 +18,9 @@ def ros_type_to_dict(msg_type):
     Create a dictionary which values say if the ROS message type is complex (not basic), which is its parent
     ROS message module, its type, if it is an array and if so, its size.
 
-    :param msg_type: ROS message type
+    :param msg_type: ROS message type.
     :return: A dictionary which values say if the ROS message type is complex (not basic), which is its parent
-    ROS message module, its type, if it is an array and if so, its size
+             ROS message module, its type, if it is an array and if so, its size.
     """
     type_regexp = re.compile(
         r'^(?P<complex>(?P<module>[\w]+)/)?(?P<type>[\w]+)(?P<array>\[(?P<array_size>[0-9]*)?\])?$')
@@ -36,7 +36,7 @@ def ros_msg_loader(type_dict):
     Dynamically import ROS message modules.
 
     :param type_dict: A dictionary which values say if the ROS message type is complex (not basic), which is its parent
-    ROS message module, its type, if it is an array and if so, its size
+                      ROS message module, its type, if it is an array and if so, its size.
     :return: The ROS message class. If the provided type does not exist, raises an import error.
     """
     try:
@@ -53,10 +53,10 @@ def ros_msg_loader(type_dict):
 
 def ros_msg_loader_str(msg_type):
     """
-    Wrapper for the :func:`ros_msg_loader` to treat string type command line arguments
+    Wrapper for the :func:`ros_msg_loader` to treat string type command line arguments.
 
-    :param msg_type: A string type ROS message type (e.g. "Log")
-    :return: The :func:`ros_msg_loader` function
+    :param msg_type: A string type ROS message type (e.g. "Log").
+    :return: The :func:`ros_msg_loader` function.
     """
     type_dict = ros_type_to_dict(msg_type)
     if type_dict:
@@ -70,8 +70,8 @@ def create_publisher(topic, msg_type):
     Create an instance of a ROS publisher object an initialize it.
 
     :param topic: The ROS topic that the publisher object is going to write in.
-    :param msg_type: ROS message type (e.g. Log)
-    :return: The newly created publisher object
+    :param msg_type: ROS message type (e.g. Log).
+    :return: The newly created publisher object.
     """
     pub = rospy.Publisher(topic, msg_type, queue_size=10)
     rospy.init_node('fuzzer_node', anonymous=False)
@@ -82,8 +82,8 @@ def map_ros_types(ros_class):
     """
     A recursive function that maps ROS message fields to Hypothesis strategies.
 
-    :param ros_class: The ROS class to be fuzzed
-    :return: A function that generates Hypothesis strategies for a given ROS message type
+    :param ros_class: The ROS class to be fuzzed.
+    :return: A function that generates Hypothesis strategies for a given ROS message type.
     """
     strategy_dict = {}
     slot_names = ros_class.__slots__
@@ -112,10 +112,10 @@ def parse_basic_arrays(s_name, type_dict, strategy_dict):
     """
     Generate Hypothesis strategies for array types.
 
-    :param s_name: Slot name to be parsed
+    :param s_name: Slot name to be parsed.
     :param type_dict: A dictionary which values say if the ROS message type is complex (not basic), which is its parent
-    ROS message module, its type, if it is an array and if so, its size
-    :param strategy_dict: A pointer to a dictionary to be filled with Hypothesis strategies
+                      ROS message module, its type, if it is an array and if so, its size.
+    :param strategy_dict: A pointer to a dictionary to be filled with Hypothesis strategies.
     """
     if type_dict['array_size']:
         array_size = int(type_dict['array_size'])
@@ -132,10 +132,10 @@ def parse_complex_types(s_name, type_dict, strategy_dict):
     """
     Generate Hypothesis strategies for complex ROS types.
 
-    :param s_name: Slot name to be parsed
+    :param s_name: Slot name to be parsed.
     :param type_dict: A dictionary which values say if the ROS message type is complex (not basic), which is its parent
-    ROS message module, its type, if it is an array and if so, its size
-    :param strategy_dict: A pointer to a dictionary to be filled with Hypothesis strategies
+                      ROS message module, its type, if it is an array and if so, its size.
+    :param strategy_dict: A pointer to a dictionary to be filled with Hypothesis strategies.
     """
     if not type_dict['array']:
         strategy_dict[s_name] = map_ros_types(ros_msg_loader(type_dict))
@@ -153,9 +153,9 @@ def dynamic_strategy_generator_ros(draw, ros_class, strategy_dict):  # This gene
     """
     Generates Hypothesis strategies for a certain ROS class.
 
-    :param ros_class: The ROS class to be filed with fuzzed values
-    :param strategy_dict:
-    :return: A pointer to a dictionary filled with Hypothesis strategies
+    :param ros_class: The ROS class to be filed with fuzzed values.
+    :param strategy_dict: Strategy dictionary.
+    :return: A pointer to a dictionary filled with Hypothesis strategies.
     """
     aux_obj = ros_class()
     for key, value in strategy_dict.iteritems():
