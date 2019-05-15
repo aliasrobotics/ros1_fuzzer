@@ -1,3 +1,9 @@
+"""
+ROS Fuzzer base module.
+
+:authors: Alias Robotics S.L. Borja Erice, Odei Olalde, Xabi Perez, Gorka Olalde
+"""
+
 import importlib
 import re
 import numpy as np

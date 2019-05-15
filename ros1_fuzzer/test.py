@@ -1,3 +1,8 @@
+"""
+ROS Fuzzer example test cases module.
+
+:authors: Alias Robotics S.L. Borja Erice, Odei Olalde, Xabi Perez, Gorka Olalde
+"""
 import unittest
 import rospy
 from hypothesis import given, settings, Verbosity

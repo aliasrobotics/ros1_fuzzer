@@ -1,3 +1,8 @@
+"""
+ROS Fuzzer basic datatype strategies module.
+
+:authors: Alias Robotics S.L. Borja Erice, Odei Olalde, Xabi Perez, Gorka Olalde
+"""
 import hypothesis.strategies as st
 from collections import namedtuple
 from hypothesis.errors import InvalidArgument

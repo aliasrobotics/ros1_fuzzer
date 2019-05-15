@@ -1,3 +1,8 @@
+"""
+ROS Fuzzer process health handling module.
+
+:authors: Alias Robotics S.L. Borja Erice, Odei Olalde, Xabi Perez, Gorka Olalde
+"""
 try:
     from xmlrpc.client import ServerProxy
 except ImportError:
