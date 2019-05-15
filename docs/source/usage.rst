@@ -76,22 +76,48 @@ detecting when this node has crashed.
 
     @settings(max_examples=5000, verbosity=Verbosity.verbose)
     @given(array(elements=float64(), min_size=6, max_size=6))
-    def fuzz_message_jointstate_effort(process_handler, fuzzed_fields):
+    def test_fuzz_message_jointstate_effort(process_handler, fuzzed_fields):
         joint_state_message.effort = fuzzed_fields
-        pub.publish(joint_state_message)
-        assert process_handler.check_if_alive() is True
+        self.pub.publish(joint_state_message)
+        assert self.process_handler.check_if_alive() is True
 
     @settings(max_examples=5000, verbosity=Verbosity.verbose)
     @given(array(elements=float64(), min_size=6, max_size=6),
            array(elements=float64(), min_size=6, max_size=6),
            array(elements=float64(), min_size=6, max_size=6))
-    def fuzz_message_jointstate_all(process_handler, positions, velocities, efforts):
+    def test_fuzz_message_jointstate_all(process_handler, positions, velocities, efforts):
         joint_state_message.position = positions
         joint_state_message.velocity = velocities
         joint_state_message.effort = efforts
-        pub.publish(joint_state_message)
-        assert process_handler.check_if_alive() is True
+        self.pub.publish(joint_state_message)
+        assert self.process_handler.check_if_alive() is True
 
 
+Usage of node health checkers
+-----------------------------
 
+A health checker for detecting node process crashes has been implemented as well.
+This way, assertions on the node process status can be performed.
+The health checker is instantiated prior to starting the tests, passing the node name as argument.
+Currently, a the local process :class:`ros1_fuzzer.process_handling.FuzzedLocalProcessHandler`
+health checker is supported.
+
+.. code-block:: python
+    :caption: Example TestSuite setup function with node health check initialization.
+
+    def setUp(self):
+        self.process_handler = FuzzedLocalProcessHandler('/example_node')
+
+
+The health checker can then be part of assert clauses on tests,
+by calling the :func:`ros1_fuzzer.process_handling.FuzzedLocalProcessHandler.check_if_alive` function.
+
+.. code-block:: python
+    :caption: Example test case with node health checking.
+
+    @given(array(elements=float64(), min_size=6, max_size=6))
+    def test_fuzz_message_jointstate_effort(process_handler, fuzzed_fields):
+        joint_state_message.effort = fuzzed_fields
+        self.pub.publish(joint_state_message)
+        assert self.process_handler.check_if_alive() is True
 
