@@ -1,18 +1,19 @@
 Installation
 ============
 
+
+Install the ROS fuzzer by directly downloading from PyPi:
+
 .. toctree::
    :maxdepth: 4
    :caption: Contents:
-
-
-Install the ROS fuzzer by directly downloading from PyPi by calling
+   
 
 ::
 
     pip install ros_fuzzer
 
-Otherwise, the fuzzer can be directly installing by cloning the repository and calling
+Otherwise, the fuzzer can be directly installed by cloning the repository and calling:
 
 ::
 
