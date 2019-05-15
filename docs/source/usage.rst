@@ -1,14 +1,14 @@
 Fuzzer usage
 ============
 
-The fuzzer is able to work in a standalone manner, by calling it to fuzz a full message structure via CLI,
-or by designing custom tests tha fuzz or exclude different fields of the messages.
+The fuzzer works in a standalone manner, by calling it to fuzz a full message structure via CLI,
+or by designing custom tests that fuzz or exclude different fields of the messages.
 
 
 CLI Usage
 ---------
 
-The fuzzer can be directly invoked from command line. Ensure that the ROS workspace is sourced before proceeding.
+The fuzzer can be directly invoked from the command line. Ensure that the ROS workspace is sourced before proceeding.
 Message types follow the ROS naming scheme.
 
 .. code-block:: bash
@@ -45,7 +45,7 @@ that is then modified before being sent.
 
 The :func:`ros1_fuzzer.ros_commons.map_ros_types` function provides a dynamic strategy for the defined ROS Message class,
 that correctly sets up each of the elements of the message with corresponding data type fuzzers.
-Examples can be extended to even fuzz different message types or subelements independently.
+Examples can be extended to even fuzz different message types or sub-elements independently.
 Built in hypothesis :mod:`hypothesis.strategies` can be used as well.
 The :func:`hypothesis.given` decorator runs the decorated function with all the defined fuzz cases.
 
