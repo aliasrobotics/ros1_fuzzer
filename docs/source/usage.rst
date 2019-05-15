@@ -1,8 +1,14 @@
 Fuzzer usage
 ============
 
+
 The fuzzer works in a standalone manner, by calling it to fuzz a full message structure via CLI,
 or by designing custom tests that fuzz or exclude different fields of the messages.
+
+.. toctree::
+   :maxdepth: 4
+   :caption: Contents:
+
 
 
 CLI Usage
@@ -57,5 +63,35 @@ The :func:`hypothesis.given` decorator runs the decorated function with all the 
         log.name = name
         log.header = header
         self.pub.publish(log)
+
+
+The following examples show a trajectory message fuzzer utilized for fuzzing the ABB control
+node of the `Link ROS Industrial <https://github.com/ros-industrial>`project.
+Notice the settings block, which serves as a way to set the fuzz cases to launch and the output of the fuzzer.
+The :class:`ros_commons.ProcessHandler` class serves to detect changes in the target node,
+detecting when this node has crashed.
+
+.. code-block:: python
+    :caption: Joint Trajectory message fuzzing used on REDROS-I ROSIN project for ABB node fuzzing.
+
+    @settings(max_examples=5000, verbosity=Verbosity.verbose)
+    @given(array(elements=float64(), min_size=6, max_size=6))
+    def fuzz_message_jointstate_effort(process_handler, fuzzed_fields):
+        joint_state_message.effort = fuzzed_fields
+        pub.publish(joint_state_message)
+        assert process_handler.check_if_alive() is True
+
+    @settings(max_examples=5000, verbosity=Verbosity.verbose)
+    @given(array(elements=float64(), min_size=6, max_size=6),
+           array(elements=float64(), min_size=6, max_size=6),
+           array(elements=float64(), min_size=6, max_size=6))
+    def fuzz_message_jointstate_all(process_handler, positions, velocities, efforts):
+        joint_state_message.position = positions
+        joint_state_message.velocity = velocities
+        joint_state_message.effort = efforts
+        pub.publish(joint_state_message)
+        assert process_handler.check_if_alive() is True
+
+
 
 
