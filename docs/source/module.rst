@@ -7,18 +7,10 @@ ROS fuzzer modules
     :maxdepth: 4
     :caption: Contents
 
+    process_handling
+    ros_basic_strategies
+    ros_commons
+    ros_fuzzer
 
-..  automodule:: ros1_fuzzer.ros_basic_strategies
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
-..  automodule:: ros1_fuzzer.ros_commons
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
-..  automodule:: ros1_fuzzer.ros_fuzzer
-    :members:
-    :undoc-members:
-    :show-inheritance:
