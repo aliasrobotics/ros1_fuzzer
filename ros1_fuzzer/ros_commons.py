@@ -24,6 +24,8 @@ def ros_type_to_dict(msg_type):
 
 
 def ros_msg_loader(type_dict):
+    if not type_dict['complex']:
+        raise ImportError('Unable to find defined ROS Message type: {}'.format(type_dict['type']))
     module = importlib.import_module(type_dict['module'] + '.msg')
     msg_class = module.__dict__[type_dict['type']]
     if not msg_class:
