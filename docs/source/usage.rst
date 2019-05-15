@@ -66,7 +66,7 @@ The :func:`hypothesis.given` decorator runs the decorated function with all the 
 
 
 The following examples show a trajectory message fuzzer utilized for fuzzing the ABB control
-node of the `Link ROS Industrial <https://github.com/ros-industrial>`project.
+node of the `ROS Industrial <https://github.com/ros-industrial>`_ project.
 Notice the settings block, which serves as a way to set the fuzz cases to launch and the output of the fuzzer.
 The :class:`ros1_fuzzer.process_handling.FuzzedLocalProcessHandler` class serves to detect changes in the target node,
 detecting when this node has crashed.

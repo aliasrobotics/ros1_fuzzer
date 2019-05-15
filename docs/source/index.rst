@@ -13,11 +13,13 @@ Welcome to ROS Fuzzer's documentation!
    install
    usage
    module
+   acknowledgements
 
 This is the documentation for the ROS1 Fuzzer developed by Alias Robotics.
 This fuzzer allows to test ROS applications against limit cases that could cause failures or pose a security risk.
 Currently the fuzzer allows to test ROS messages of any type by dynamically setting up the fuzz cases for each of the
 message elements.
+
 
 
 Indices and tables
