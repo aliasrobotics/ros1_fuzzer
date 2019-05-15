@@ -1,3 +1,8 @@
+"""
+ROS Fuzzer CLI interface main module.
+
+:authors: Alias Robotics S.L. Borja Erice, Odei Olalde, Xabi Perez, Gorka Olalde
+"""
 import logging
 import rospy
 from argparse import ArgumentParser
