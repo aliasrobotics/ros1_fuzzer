@@ -17,6 +17,7 @@ setup(
         'hypothesis==3.82',
         'attrs==19.1.0',
         'enum34==1.1.6',
+        'psutil==5.6.2'
     ],
     include_package_data=True,
 )
