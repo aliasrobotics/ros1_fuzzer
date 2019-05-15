@@ -1,6 +1,11 @@
 Installation
 ============
 
+.. toctree::
+   :maxdepth: 4
+   :caption: Contents:
+
+
 Install the ROS fuzzer by directly downloading from PyPi by calling
 
 ::
