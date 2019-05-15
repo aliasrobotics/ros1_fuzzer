@@ -4,7 +4,9 @@ ROS fuzzer modules
 ==================
 
 .. toctree::
-   :maxdepth: 4
+    :maxdepth: 4
+    :caption: Contents
+
 
 ..  automodule:: ros1_fuzzer.ros_basic_strategies
     :members:

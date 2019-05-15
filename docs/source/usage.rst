@@ -1,6 +1,10 @@
 Fuzzer usage
 ============
 
+.. toctree::
+   :maxdepth: 4
+   :caption: Contents:
+
 The fuzzer is able to work in a standalone manner, by calling it to fuzz a full message structure via CLI,
 or by designing custom tests tha fuzz or exclude different fields of the messages.
 
