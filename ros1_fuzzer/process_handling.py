@@ -6,7 +6,15 @@ import psutil
 
 
 class FuzzedLocalProcessHandler:
+    """
+    Health checking class for locally running ROS nodes.
+    """
     def __init__(self, node_name):
+        """
+        Health checker initialization.
+
+        :param node_name: Target node that will be queried for aliveness.
+        """
         self.node_name = node_name
         self.node_pid = -1
         self.master_conn = ServerProxy('http://127.0.0.1:11311')
@@ -14,7 +22,9 @@ class FuzzedLocalProcessHandler:
 
 
     def get_node_pid(self):
-
+        """
+        Get the target node PID.
+        """
         code, msg, val = self.master_conn.lookupNode('', self.node_name)
         if code == 1:
             node_conn = ServerProxy(val)
@@ -26,6 +36,11 @@ class FuzzedLocalProcessHandler:
 
 
     def check_if_alive(self):
+        """
+        Check if the target node's PID is alive. Target function to use in test cases.
+
+        :return: Status of the node. True if the node is alive, False otherwise.
+        """
         return psutil.pid_exists(self.node_pid)
 
 
