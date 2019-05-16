@@ -36,7 +36,7 @@ Usage as Unit Testing counterpart
 
 Test cases can use the provided Hypothesis strategy generation functions to get fuzzed messages that can be modified and
 used for different purposes. Fuzzed test cases follow the same mechanisms as standard data test cases,
-obtaining tbe fuzzed message as a parameter to the test case.
+obtaining the fuzzed message as a parameter to the test case.
 The following example shows a simple test case that makes use of a fuzzed Log message,
 that is then modified before being sent.
 
@@ -50,7 +50,7 @@ that is then modified before being sent.
 
 
 The :func:`ros1_fuzzer.ros_commons.map_ros_types` function provides a dynamic strategy for the defined ROS Message class,
-that correctly sets up each of the elements of the message with corresponding data type fuzzers.
+that correctly sets up each of the elements of the message with the corresponding data type fuzzers.
 Examples can be extended to even fuzz different message types or sub-elements independently.
 Built in hypothesis :mod:`hypothesis.strategies` can be used as well.
 The :func:`hypothesis.given` decorator runs the decorated function with all the defined fuzz cases.
@@ -67,7 +67,7 @@ The :func:`hypothesis.given` decorator runs the decorated function with all the 
 
 The following examples show a trajectory message fuzzer utilized for fuzzing the ABB control
 node of the `ROS Industrial <https://github.com/ros-industrial>`_ project.
-Notice the settings block, which serves as a way to set the fuzz cases to launch and the output of the fuzzer.
+Notice the settings block, which serves as a way to set the fuzz cases to launch, and the output of the fuzzer.
 The :class:`ros1_fuzzer.process_handling.FuzzedLocalProcessHandler` class serves to detect changes in the target node,
 detecting when this node has crashed.
 
@@ -98,8 +98,8 @@ Usage of node health checkers
 
 A health checker for detecting node process crashes has been implemented as well.
 This way, assertions on the node process status can be performed.
-The health checker is instantiated prior to starting the tests, passing the node name as argument.
-Currently, a the local process :class:`ros1_fuzzer.process_handling.FuzzedLocalProcessHandler`
+The health checker is instantiated prior to starting the tests, passing the node name as an argument.
+Currently, a local process :class:`ros1_fuzzer.process_handling.FuzzedLocalProcessHandler`
 health checker is supported.
 
 .. code-block:: python
