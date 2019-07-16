@@ -14,8 +14,8 @@ in normal testing cases or normal behaviour of the target robot.
 
 The full documentation is available on [ReadTheDocs](https://ros1_fuzzer.readthedocs.com)
 
-This project has been funded by the [ROSIN Project](http://rosin-project.eu/) as part of the REDROS-I project.
-Contract agreement No.: 732287
+ROS1_fuzzer is an effort part of the RedROS-I FTP funded by [ROSIN](http://rosin-project.eu/) (European Union’s Horizon 2020 research and innovation programme) with the grant agreement No 732287.
+
 <img src="http://rosin-project.eu/wp-content/uploads/2017/03/Logo_ROSIN_CMYK-Website.png"/>
 
 Based on the original idea and Hypothesis-ROS project by [Florian Krommer](https://github.com/fkromer/hypothesis-ros)
