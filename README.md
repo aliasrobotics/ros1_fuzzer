@@ -3,7 +3,7 @@
 
 This repository contains Alias Robotics's ROS message fuzzer.
 
-[![PyPI version](https://badge.fury.io/py/ros1_fuzzer.svg)](https://badge.fury.io/py/ros1_fuzzer)   
+[![PyPI version](https://badge.fury.io/py/ros1-fuzzer.svg)](https://badge.fury.io/py/ros1-fuzzer)   
 [![Documentation Status](https://readthedocs.org/projects/ros1_fuzzer/badge/?version=latest)](https://ros1_fuzzer.readthedocs.io/en/latest/?badge=latest)   
 
 
