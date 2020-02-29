@@ -1,5 +1,5 @@
 # ROS Message Fuzzer
-<a href="http://www.aliasrobotics.com"><img src="https://aliasrobotics.com/images/logo.png" align="left" hspace="8" vspace="2" width="200"></a>
+<a href="http://www.aliasrobotics.com"><img src="https://aliasrobotics.com/img/git_alias_logo.png" align="left" hspace="8" vspace="2" width="200"></a>
 
 This repository contains Alias Robotics's ROS message fuzzer.
 
